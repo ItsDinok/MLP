@@ -14,7 +14,7 @@ public:
 		const std::string& initialisation_function
 	);
 
-	double forward(const std::vector<double>& input);
+	std::vector<double> forward(const std::vector<double>& input);
 
 private:
 	// Attributes

@@ -18,7 +18,7 @@ std::vector<double> initialiser(int fan_in, Initialisers init, Activations activ
 			// TODO: Implement this
 		case Initialisers::undefined:
 		default:
-			std::runtime_error("Initialisation undefined");
+			throw std::runtime_error("Initialisation undefined");
 	}
 }
 
