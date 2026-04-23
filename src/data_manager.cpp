@@ -18,7 +18,7 @@ void parse_csv(const std::string& path,
 	std::unordered_map<std::string, int> labels;
 	int label_idx = 0;
 
-if (!file.is_open())
+	if (!file.is_open())
 	{
 		std::cerr << "Failed to open file\n";
 		return;

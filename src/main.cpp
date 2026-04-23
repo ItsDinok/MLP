@@ -3,6 +3,8 @@
 #include "neuron_functions.h"
 #include "data_manager.h"
 
+// URGENT TODO: ADD COMMENTS AND DOCSTRINGS EVERYWHERE
+
 int main()
 {
 	Neuron neuron(Activations::ReLU, Initialisers::n_kaiming_he, 5);
@@ -15,6 +17,10 @@ int main()
 	std::vector<double> y;
 
 	parse_csv("iris.csv", X, y, true, true);
+	
+	Dataset dataset(X, y);
+	std::cout << "Dataset length: " << dataset.length() << ", width: " << dataset.width() << std::endl;
+
 	shuffle_data(X, y);
 	std::cout << "X Length: " << X.size() << ", X width: " << X[0].size() << std::endl;
 

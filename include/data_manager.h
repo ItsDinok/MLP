@@ -7,6 +7,37 @@
 #include <unordered_map>
 #include <random>
 #include <utility>
+#include <stdexcept>
+
+// TODO: Make a dataloader struct/class
+
+// TODO: Document class assumptions
+// TODO: add constructors for difficult y cases
+class Dataset
+{
+public:
+	Dataset(const std::vector<std::vector<double>>& X, const std::vector<double>& y);
+
+	// Getters
+	size_t length() const;
+	size_t width() const;
+	std::pair<size_t, size_t> shape() const;
+
+	// Overrides
+	std::vector<double>& operator[](std::size_t index);
+	const std::vector<double>& operator[](std::size_t index) const;
+
+	// Interface
+
+private:
+	// Methods
+	void verify_integrity(const std::vector<std::vector<double>>& X, 
+		const std::vector<double>& y) const;
+
+	// Attributes
+	std::vector<std::vector<double>> data;
+	std::pair<std::string, int> label_mapping;
+};
 
 void parse_csv(const std::string& path, 
 	std::vector<std::vector<double>>& X, 
@@ -27,3 +58,17 @@ void train_test_split(
 	std::vector<double>& y_test,
 	double train_balance = 0.7,
 	bool shuffle = false);
+
+
+// UNIMPLEMENTED
+void pearson_correlation();
+void spearman_correlation();
+// NOTE: LDA/PCA is probably beyond me
+void correlation_matrix();
+void describe();
+void standardise();
+void min_max_normalisation();
+void fit_scaler();
+void apply_scaler();
+
+// NOTE TODO: batching is done by the model
