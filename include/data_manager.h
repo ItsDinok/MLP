@@ -8,6 +8,8 @@
 #include <random>
 #include <utility>
 #include <stdexcept>
+#include <cmath>
+#include <algorithm>
 
 // TODO: Make a dataloader struct/class
 
@@ -39,6 +41,13 @@ public:
 	void shuffle();
 
 	// Interface
+
+	// Mutate
+	void drop_columns(int column);
+	void drop_columns(const std::vector<int>& columns);
+	void drop_rows(int row);
+	void drop_rows(const std::vector<int>& rows);
+	void drop_rows(const std::pair<size_t, size_t>& range);
 
 private:
 	// Methods
