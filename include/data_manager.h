@@ -11,6 +11,13 @@
 #include <cmath>
 #include <algorithm>
 
+// TODO: I was working on column name extraction. Finish this 
+
+enum class Axis
+{
+	X, Y
+};
+
 // TODO: Make a dataloader struct/class
 
 // TODO: Document class assumptions
@@ -41,6 +48,7 @@ public:
 	void shuffle();
 
 	// Interface
+	void show_column_names(Axis axis, size_t gap = 10);
 
 	// Mutate
 	void drop_columns(int column);
@@ -53,6 +61,9 @@ private:
 	// Methods
 	void verify_integrity(const std::vector<std::vector<double>>& X, 
 		const std::vector<double>& y) const;
+	// TODO: Implement this
+	// TODO: Implement in constructor
+	std::vector<std::string> extract_column_names(const std::string& path);
 
 	// Attributes
 	std::vector<std::vector<double>> data;

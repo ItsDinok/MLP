@@ -20,7 +20,9 @@ Dataset::Dataset(const std::string& path, bool strip_top, bool label_encode)
 	std::vector<std::vector<double>> X;
 	std::vector<double> y;
 
-	parse_csv(path, X, y, strip_top, label_encode);
+if (strip_top) column_names = extract_column_names(path);
+	parse_csv(path, X, y, strip_top, label_encode);	
+
 	verify_integrity(X, y);
 	for (size_t i = 0; i < X.size(); ++i)
 	{
@@ -81,6 +83,7 @@ std::pair<size_t, size_t> Dataset::shape() const
 std::unordered_map<std::string, double> Dataset::pearson_correlation(int feature)
 {
 	if ((size_t)feature >= width()) throw std::runtime_error("Feature index out of range.");
+	if (data.empty()) throw std::runtime_error("Dataset is empty.");
 
 	// This measures the pearson correlation of each feature against a target feature
 	std::unordered_map<std::string, double> correlations;
@@ -128,10 +131,78 @@ std::unordered_map<std::string, double> Dataset::pearson_correlation(int feature
 
 std::unordered_map<std::string, double> Dataset::spearman_correlation(int feature)
 {
+	if ((size_t)feature >= width()) throw std::runtime_error("Feature out of bounds.");
+	if (data.empty()) throw std::runtime_error("Dataset is empty.");
+
 	std::unordered_map<std::string, double> correlations;
+	
 	return correlations;
 }
 
+
+std::vector<std::vector<double>> Dataset::correlation_matrix(const std::string& option)
+{
+	std::vector<std::vector<double>> matrix;
+	if (option == "spearman")
+	{
+		// do something
+	}
+	else if (option == "pearson")
+	{
+		for (size_t i = 0; i < width(); ++i)
+		{
+			//matrix.push_back(pearson_correlation(i));
+		}
+
+		// Display
+		if (!column_names.empty())
+		{
+		}
+	}
+	else throw std::runtime_error("Correlation matrix option not recognised.");
+
+	return matrix;
+}
+
+
+//
+// INTERFACES
+//
+
+void Dataset::show_column_names(Axis axis, size_t gap)
+{
+	// Pad gap
+	std::string gap_string = "";
+	for (size_t i = 0; i < gap; ++i)
+	{
+		gap_string += " ";
+	}
+
+	if (column_names.empty()) 
+	{
+		std::cout << "Column names not assigned." << std::endl;
+		return;
+	}
+	switch(axis)
+	{
+		case Axis::X:
+			for (size_t i = 0; i < column_names.size(); ++i)
+			{
+				std::cout << column_names[i] << gap;	
+			}
+			std::cout << "" << std::endl;
+			break;
+		// I do not know why anyone would want this but I bet someone does
+		case Axis::Y:
+			for (size_t i = 0; i < column_names.size(); ++i)
+			{
+				std::cout << column_names[i] << std::endl;
+			}
+		default:
+			// Enum security means it should never get here
+			throw std::runtime_error("Unrecognised axis.");
+	}
+}
 
 //
 // MUTATIONS
@@ -210,6 +281,20 @@ void Dataset::drop_rows(const std::pair<size_t, size_t>& range)
 //
 // MISC METHODS
 //
+
+std::vector<std::string> Dataset::extract_column_names(const std::string& path)
+{
+	std::ifstream file(path);
+	if (!file.is_open())
+	{
+		throw std::runtime_error("Failed to open file.");
+		std::string line;
+		std::vector<std::string> column_names;
+		
+		std::getline(file, line);
+		
+	}
+}
 
 void Dataset::shuffle()
 {

@@ -19,6 +19,7 @@ int main()
 	parse_csv("iris.csv", X, y, true, true);
 	
 	Dataset dataset("iris.csv", true, true);
+	dataset.show_column_names(Axis::X, 5);
 
 	std::cout << "Correlations:\n" << std::endl;
 	std::unordered_map<std::string, double> correlations = dataset.pearson_correlation(4);
