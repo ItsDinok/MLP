@@ -7,7 +7,23 @@ Dataset::Dataset(const std::vector<std::vector<double>>& X, const std::vector<do
 	// Easiest case, y is numeric
 	for (size_t i = 0; i < X.size(); ++i)
 	{
-		// TODO: Add row-length enforcement
+		std::vector<double> row = X[i];
+		row.push_back(y[i]);
+		data.push_back(row);
+	}
+}
+
+// TODO: Adversarial cases handling
+// TODO: Automatic label encoding or top stripping
+Dataset::Dataset(const std::string& path, bool strip_top, bool label_encode)
+{
+	std::vector<std::vector<double>> X;
+	std::vector<double> y;
+
+	parse_csv(path, X, y, strip_top, label_encode);
+	verify_integrity(X, y);
+	for (size_t i = 0; i < X.size(); ++i)
+	{
 		std::vector<double> row = X[i];
 		row.push_back(y[i]);
 		data.push_back(row);
@@ -58,8 +74,75 @@ std::pair<size_t, size_t> Dataset::shape() const
 
 
 //
+// CORRELATION ANALYSIS
+//
+std::unordered_map<std::string, double> Dataset::pearson_correlation(int feature)
+{
+	// This measures the pearson correlation of each feature against a target feature
+	std::unordered_map<std::string, double> correlations;
+	size_t length = this->length();
+
+	// Can be done in one loop per feature
+	for (size_t i = 0; i < width(); ++i)
+	{
+		double sum_x = 0.0;
+		double sum_y = 0.0;
+		double sum_x2 = 0.0;
+		double sum_y2 = 0.0;
+		double sum_xy = 0.0;
+
+		for (size_t j = 0; j < length; ++j)
+		{
+			sum_x += data[j][i];
+			sum_y += data[j][feature];
+			sum_xy += data[j][i] * data[j][feature];
+			sum_x2 += data[j][i] * data[j][i];
+			sum_y2 += data[j][feature] * data[j][feature];
+		}
+
+		// Inefficient but readable
+		double numerator = length * sum_xy - (sum_x * sum_y);
+		double denominator = std::sqrt((length * sum_x2 - (sum_x * sum_x)) *
+				(length * sum_y2 - (sum_y * sum_y)));
+		
+		// Edge case for zero-variance columns
+		if (denominator == 0) denominator = 0.00000000000000001;
+
+		if (!column_names.empty())
+		{
+			correlations[column_names[i]] = numerator / denominator;
+		}
+		else
+		{
+			correlations[std::to_string(i)] = numerator / denominator;
+		}
+	}
+
+	return correlations;
+}
+
+
+std::unordered_map<std::string, double> spearman_correlation(int feature)
+{
+
+}
+
+
+//
 // MISC METHODS
 //
+
+void Dataset::shuffle()
+{
+	std::mt19937 generator(std::random_device{}());
+
+	for (size_t i = length(); i-- > 1;)
+	{
+		std::uniform_int_distribution<int> dist(0, i);
+		int j = dist(generator);
+		std::swap(data[i], data[j]);
+	}
+}
 
 void Dataset::verify_integrity(const std::vector<std::vector<double>>& X,
 	const std::vector<double>& y) const

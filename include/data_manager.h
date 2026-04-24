@@ -17,6 +17,7 @@ class Dataset
 {
 public:
 	Dataset(const std::vector<std::vector<double>>& X, const std::vector<double>& y);
+	Dataset(const std::string& path, bool strip_top = true, bool label_encode = false);
 
 	// Getters
 	size_t length() const;
@@ -27,6 +28,16 @@ public:
 	std::vector<double>& operator[](std::size_t index);
 	const std::vector<double>& operator[](std::size_t index) const;
 
+	// Correlation functions
+	std::unordered_map<std::string, double> pearson_correlation(int feature);
+	// TODO: Implement
+	std::unordered_map<std::string, double> spearman_correlation(int feature);
+	// TODO: Implement
+	std::vector<std::vector<double>> correlation_matrix(const std::string& option);
+
+	// TODO: Add seeding option
+	void shuffle();
+
 	// Interface
 
 private:
@@ -36,7 +47,10 @@ private:
 
 	// Attributes
 	std::vector<std::vector<double>> data;
+	// TODO: Implement
 	std::pair<std::string, int> label_mapping;
+	// TODO: Implement
+	std::vector<std::string> column_names;
 };
 
 void parse_csv(const std::string& path, 
@@ -61,10 +75,7 @@ void train_test_split(
 
 
 // UNIMPLEMENTED
-void pearson_correlation();
-void spearman_correlation();
 // NOTE: LDA/PCA is probably beyond me
-void correlation_matrix();
 void describe();
 void standardise();
 void min_max_normalisation();

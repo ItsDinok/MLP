@@ -18,7 +18,17 @@ int main()
 
 	parse_csv("iris.csv", X, y, true, true);
 	
-	Dataset dataset(X, y);
+	Dataset dataset("iris.csv", true, true);
+
+	std::cout << "Correlations:\n" << std::endl;
+	std::unordered_map<std::string, double> correlations = dataset.pearson_correlation(4);
+	for (const auto& pair: correlations)
+	{
+		std::cout << pair.first << " -> " << pair.second << std::endl;
+	}
+
+	std::cout << "\n\n\n...\n" << std::endl;
+
 	std::cout << "Dataset length: " << dataset.length() << ", width: " << dataset.width() << std::endl;
 
 	shuffle_data(X, y);
